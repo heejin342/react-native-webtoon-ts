@@ -8,9 +8,11 @@ import {
 import Home from './screen/Home';
 import Search from './screen/Search';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-Ionicons.loadFont();
-const Tab = createBottomTabNavigator();
 import {mainColor} from './utils/color';
+
+Ionicons.loadFont();
+
+const Tab = createBottomTabNavigator();
 
 const App = () => {
   const screenOptions = ({
@@ -35,13 +37,16 @@ const App = () => {
     },
   });
 
-  const tabBarOption = {
+  const tabBarOptions = {
     activeTintColor: mainColor,
     inactiveTintColor: 'gray',
   };
+
   return (
     <NavigationContainer>
-      <Tab.Navigator screenOptions={screenOptions} tabBarOptions={tabBarOption}>
+      <Tab.Navigator
+        screenOptions={screenOptions}
+        tabBarOptions={tabBarOptions}>
         <Tab.Screen name="웹툰" component={Home} />
         <Tab.Screen name="검색" component={Search} />
       </Tab.Navigator>

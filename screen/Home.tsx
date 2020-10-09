@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
 import {
   Container,
@@ -41,7 +41,8 @@ const WebtoonImage = styled.Image`
 const WebtoonButton = styled.TouchableOpacity`
   width: 48%;
 `;
-const Home: React.FC<{asd: string}> = ({asd}) => {
+
+const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState<
     {title: string; url: string; image: string}[]
@@ -49,22 +50,31 @@ const Home: React.FC<{asd: string}> = ({asd}) => {
   const [select, setSelect] = useState(1);
   const [url, setUrl] = useState<string | null>(null);
 
-  const sitelist = [
+  const sitelist: {
+    site: '네이버' | '다음' | '카카오';
+    value: number;
+    url: '/naver' | '/daum' | '/kakao';
+  }[] = [
     {site: '네이버', value: 1, url: '/naver'},
     {site: '다음', value: 2, url: '/daum'},
     {site: '카카오', value: 3, url: '/kakao'},
   ];
-  const getWebtoomInfo = async (value: number) => {
-    try {
-      const site = sitelist.find((s) => s.value === value);
-      const baseurl = 'http://localhost:8080';
-      const {data} = await axios.get(`${baseurl}${site?.url}`);
-      setList(data.webtoonlist);
-      setLoading(false);
-    } catch {
-      setLoading(false);
-    }
-  };
+
+  const getWebtoomInfo = useCallback(
+    async (value: number) => {
+      try {
+        const site = sitelist.find((s) => s.value === value);
+        const baseurl = 'http://localhost:8080';
+        const {data} = await axios.get(`${baseurl}${site?.url}`);
+        setList(data.webtoonlist);
+        setLoading(false);
+      } catch {
+        setLoading(false);
+      }
+    },
+    [sitelist],
+  );
+
   const handleSelectSite = (value: number) => {
     setSelect(value);
     setLoading(true);
@@ -73,7 +83,7 @@ const Home: React.FC<{asd: string}> = ({asd}) => {
 
   useEffect(() => {
     getWebtoomInfo(1);
-  }, []);
+  }, [getWebtoomInfo]);
 
   return (
     <Container>
