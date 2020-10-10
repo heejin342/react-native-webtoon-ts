@@ -83,7 +83,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     getWebtoomInfo(1);
-  }, [getWebtoomInfo]);
+  }, []);
 
   return (
     <Container>
