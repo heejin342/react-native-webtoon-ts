@@ -46,7 +46,8 @@ const App = () => {
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={screenOptions}
-        tabBarOptions={tabBarOptions}>
+        tabBarOptions={tabBarOptions}
+        initialRouteName="검색">
         <Tab.Screen name="웹툰" component={Home} />
         <Tab.Screen name="검색" component={Search} />
       </Tab.Navigator>

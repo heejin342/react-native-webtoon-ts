@@ -35,7 +35,7 @@ const WebtoonView = styled.View`
 
 const WebtoonImage = styled.Image`
   width: 100%;
-  height: 100;
+  height: 100px;
 `;
 
 const WebtoonButton = styled.TouchableOpacity`
@@ -135,7 +135,7 @@ const Home: React.FC = () => {
                         resizeMode="contain"
                       />
                     </CardItem>
-                    <CardItem style={{justifyContent: 'center'}}>
+                    <CardItem>
                       <Text>{value.title}</Text>
                     </CardItem>
                   </Card>
