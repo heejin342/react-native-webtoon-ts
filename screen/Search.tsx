@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import React, {useRef, useEffect, useState} from 'react';
+import React, {useRef, useEffect} from 'react';
 import {
   View,
   TextInput,
@@ -9,20 +9,25 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {WebView} from 'react-native-webview';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import CustomWebView from '../components/CustomWebView';
+import {useSelector, useDispatch} from 'react-redux';
+import {siteChange, getUrl} from '../reducer/site';
+import {RootState} from '../reducer';
+
+FontAwesome.loadFont();
 
 const Search: React.FC = () => {
+  const dispatch = useDispatch();
+  const {siteList, selectSite, url, search} = useSelector(
+    (state: RootState) => state.site,
+  );
   const input = useRef<TextInput>(null);
-  const [selectSite, setSelectSite] = useState(1);
-  const [url, setUrl] = useState<string | null>(null);
-  const siteList = [
-    {name: '네이버', value: 1},
-    {name: '다음', value: 2},
-  ];
+
   useEffect(() => {
     input.current?.focus();
   }, []);
-  console.log(url);
+
   return (
     <SafeAreaView style={style.container}>
       <View style={style.buttonBox}>
@@ -30,10 +35,10 @@ const Search: React.FC = () => {
           <TouchableOpacity
             key={site.value}
             onPress={() => {
-              setSelectSite(site.value);
+              dispatch(siteChange(site.value));
             }}>
             <Text style={{color: selectSite === site.value ? 'pink' : 'black'}}>
-              {site.name}
+              {site.site}
             </Text>
           </TouchableOpacity>
         ))}
@@ -41,20 +46,30 @@ const Search: React.FC = () => {
       <TextInput
         ref={input}
         style={style.searchBar}
+        defaultValue={search}
         onSubmitEditing={async (e) => {
           const {text} = e.nativeEvent;
           if (text) {
-            const {data} = await Axios.post('http://localhost:8080/search', {
-              search: text,
-              selectSite,
-            });
-            setUrl(data.url);
+            if (selectSite === 1) {
+              const {data} = await Axios.post('http://localhost:8080/search', {
+                search: text,
+                selectSite,
+              });
+              dispatch(getUrl(data.url, text));
+            } else {
+              dispatch(
+                getUrl(
+                  `http://m.webtoon.daum.net/m/webtoon/search?q=${text}`,
+                  text,
+                ),
+              );
+            }
           } else Alert.alert('검색어를 입력하세요.');
         }}
       />
       {url ? (
         <View style={{flex: 1, width: '100%', marginTop: 10}}>
-          <WebView source={{uri: url}} />
+          <CustomWebView url={url} />
         </View>
       ) : (
         <View>

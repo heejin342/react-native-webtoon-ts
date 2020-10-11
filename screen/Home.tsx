@@ -15,8 +15,11 @@ import {
   Spinner,
 } from 'native-base';
 import styled from 'styled-components/native';
-import {WebView} from 'react-native-webview';
 import {mainColor} from '../utils/color';
+import CustomWebView from '../components/CustomWebView';
+import {useSelector, useDispatch} from 'react-redux';
+import {getUrl, siteChange} from '../reducer/site';
+import {RootState} from '../reducer';
 
 const WebtoonContents = styled(Content)`
   padding-left: 10px;
@@ -43,27 +46,19 @@ const WebtoonButton = styled.TouchableOpacity`
 `;
 
 const Home: React.FC = () => {
+  const dispatch = useDispatch();
+  const {siteList, selectSite, url} = useSelector(
+    (state: RootState) => state.site,
+  );
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState<
     {title: string; url: string; image: string}[]
   >([]);
-  const [select, setSelect] = useState(1);
-  const [url, setUrl] = useState<string | null>(null);
-
-  const sitelist: {
-    site: '네이버' | '다음' | '카카오';
-    value: number;
-    url: '/naver' | '/daum' | '/kakao';
-  }[] = [
-    {site: '네이버', value: 1, url: '/naver'},
-    {site: '다음', value: 2, url: '/daum'},
-    {site: '카카오', value: 3, url: '/kakao'},
-  ];
 
   const getWebtoomInfo = useCallback(
     async (value: number) => {
       try {
-        const site = sitelist.find((s) => s.value === value);
+        const site = siteList.find((s) => s.value === value);
         const baseurl = 'http://localhost:8080';
         const {data} = await axios.get(`${baseurl}${site?.url}`);
         setList(data.webtoonlist);
@@ -72,18 +67,17 @@ const Home: React.FC = () => {
         setLoading(false);
       }
     },
-    [sitelist],
+    [siteList],
   );
 
   const handleSelectSite = (value: number) => {
-    setSelect(value);
+    dispatch(siteChange(value));
     setLoading(true);
-    getWebtoomInfo(value);
   };
 
   useEffect(() => {
-    getWebtoomInfo(1);
-  }, []);
+    getWebtoomInfo(selectSite);
+  }, [selectSite]);
 
   return (
     <Container>
@@ -93,7 +87,7 @@ const Home: React.FC = () => {
             <Button
               transparent
               onPress={() => {
-                setUrl(null);
+                dispatch(getUrl(null));
               }}>
               <Text>돌아가기</Text>
             </Button>
@@ -101,10 +95,10 @@ const Home: React.FC = () => {
             <Button
               transparent
               onPress={() => {
-                handleSelectSite(select === 1 ? 2 : 1);
+                handleSelectSite(selectSite === 1 ? 2 : 1);
               }}>
               <Text style={{color: mainColor}}>
-                {select === 1 ? '다음' : '네이버'}
+                {selectSite === 1 ? '다음' : '네이버'}
               </Text>
             </Button>
           )}
@@ -115,7 +109,7 @@ const Home: React.FC = () => {
         <Right />
       </Header>
       {url ? (
-        <WebView source={{uri: url}} />
+        <CustomWebView url={url} />
       ) : (
         <WebtoonContents>
           {loading ? (
@@ -126,7 +120,7 @@ const Home: React.FC = () => {
                 <WebtoonButton
                   key={index}
                   onPress={() => {
-                    setUrl(value.url);
+                    dispatch(getUrl(value.url, value.title));
                   }}>
                   <Card>
                     <CardItem header>

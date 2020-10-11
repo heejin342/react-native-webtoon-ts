@@ -7,8 +7,14 @@ import {
 } from '@react-navigation/bottom-tabs';
 import Home from './screen/Home';
 import Search from './screen/Search';
+import Counter from './screen/Counter';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {mainColor} from './utils/color';
+import {createStore} from 'redux';
+import {Provider} from 'react-redux';
+import rootReducer from './reducer';
+
+const store = createStore(rootReducer);
 
 Ionicons.loadFont();
 
@@ -43,15 +49,17 @@ const App = () => {
   };
 
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={screenOptions}
-        tabBarOptions={tabBarOptions}
-        initialRouteName="검색">
-        <Tab.Screen name="웹툰" component={Home} />
-        <Tab.Screen name="검색" component={Search} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={screenOptions}
+          tabBarOptions={tabBarOptions}>
+          <Tab.Screen name="웹툰" component={Home} />
+          <Tab.Screen name="검색" component={Search} />
+          <Tab.Screen name="카운터" component={Counter} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 };
 
