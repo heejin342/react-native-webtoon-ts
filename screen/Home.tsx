@@ -25,7 +25,6 @@ const WebtoonContents = styled(Content)`
   padding-left: 10px;
   padding-right: 10px;
 `;
-//flex 디자인 개구리
 const WebtoonView = styled.View`
   flex-direction: row;
   flex-wrap: wrap;

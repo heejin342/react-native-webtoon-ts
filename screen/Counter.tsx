@@ -1,26 +1,26 @@
 import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
+import {RootState} from '../reducer';
 import {increase, decrease} from '../reducer/counter';
 
 const Counter = () => {
   const dispatch = useDispatch();
   const {
     counter: {count},
-    site: {site},
-  } = useSelector((state) => state);
+  } = useSelector((state: RootState) => state);
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>{count}</Text>
       <TouchableOpacity
         onPress={() => {
-          dispatch(increase());
+          dispatch(increase(count));
         }}>
         <Text>+</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
-          dispatch(decrease());
+          dispatch(decrease(count));
         }}>
         <Text>-</Text>
       </TouchableOpacity>
