@@ -31,10 +31,6 @@ const WebtoonView = styled.View`
   justify-content: space-between;
 `;
 
-// const WebtoonCard = styled(Card)`
-//   width: 48%;
-// `;
-
 const WebtoonImage = styled.Image`
   width: 100%;
   height: 100px;
@@ -76,7 +72,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     getWebtoomInfo(selectSite);
-  }, [selectSite]);
+  }, [getWebtoomInfo, selectSite]);
 
   return (
     <Container>

@@ -1,28 +1,22 @@
 import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
-import {RootState} from '../reducer';
-import {increase, decrease} from '../reducer/counter';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParamList} from '../navigation/AppStack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Counter = () => {
-  const dispatch = useDispatch();
-  const {
-    counter: {count},
-  } = useSelector((state: RootState) => state);
+interface Props {
+  navigation: StackNavigationProp<RootStackParamList, 'Login'>;
+}
+
+const Counter: React.FC<Props> = ({navigation}) => {
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>{count}</Text>
       <TouchableOpacity
-        onPress={() => {
-          dispatch(increase(count));
+        onPress={async () => {
+          navigation.replace('Login');
+          await AsyncStorage.removeItem('token');
         }}>
-        <Text>+</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          dispatch(decrease(count));
-        }}>
-        <Text>-</Text>
+        <Text>로그아웃</Text>
       </TouchableOpacity>
     </View>
   );
